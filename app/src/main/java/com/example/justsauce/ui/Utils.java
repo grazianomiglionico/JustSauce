@@ -9,7 +9,7 @@ public class Utils {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    public static boolean verifyPassword(String password){
+    public static boolean checkPassword(String password){
         if(password.length()>=6) return true; else return false;
     }
 
@@ -17,11 +17,11 @@ public class Utils {
         if(password.equals(password1)) return true; else return false;
     }
 
-    public static boolean verifyNTelephone(String n_telefono){
+    public static boolean checkNTelephone(String n_telefono){
         if(n_telefono.length()==10) return true; else return false;
     }
 
-    public static boolean verifyNickname(String nickname){
+    public static boolean checkNickname(String nickname){
         if(nickname.length()>=5) return true; else return false;
     }
 
