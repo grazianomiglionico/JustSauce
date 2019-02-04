@@ -5,6 +5,7 @@
     package="com.example.justsauce">
 
     <dist:module dist:instant="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -26,15 +27,11 @@
 
 
 
-        <activity android:name=".ui.activities.LoginActivity">
-
-        </activity>
+        <activity android:name=".ui.activities.LoginActivity"> </activity>
 
 
 
-        <activity android:name=".ui.activities.RegisterActivity">
-
-        </activity>
+        <activity android:name=".ui.activities.RegisterActivity"> </activity>
 
     </application>
 

@@ -8,8 +8,7 @@
     </item>
 
     <item android:id="@+id/checkout_menu"
-        android:title="@string/checkout"
-        app:showAsAction="always">
+        android:title="@string/checkout">
     </item>
 
 

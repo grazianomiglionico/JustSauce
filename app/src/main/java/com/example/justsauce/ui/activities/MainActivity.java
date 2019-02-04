@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Restaurant> getData(){
         arrayList = new ArrayList();
 
-        Restaurant mcDonald = new Restaurant("MC Donald's","Via Sandro sandri 81",10);
-        Restaurant burgerKing = new Restaurant("Burger King","Via Sandro sandri 79",8);
-        Restaurant kfc = new Restaurant("KFC","Via Sandro sandri 71",12);
+        Restaurant mcDonald = new Restaurant("MC Donald's","Via Tiburtina",10,"Fast Food","Burgers","15-20 min",4.5);
+        Restaurant burgerKing = new Restaurant("Burger King","Via Tiburtina",8,"Fast Food","Burgers","15.20 min",4.6);
+        Restaurant rossoPomodoro = new Restaurant("Rosso Pomodoro","Via Sandro sandri 81",15,"Italiano","Pizza","20-30 min",4.8);
 
         arrayList.add(mcDonald);
         arrayList.add(burgerKing);
-        arrayList.add(kfc);
+        arrayList.add(rossoPomodoro);
 
         return arrayList;
     }
