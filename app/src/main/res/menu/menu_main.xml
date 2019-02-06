@@ -2,14 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/changeLayout"
+        android:icon="@drawable/baseline_view_list_black_24"
+        android:title="@string/cambiaLayout"
+        app:showAsAction="always">
+    </item>
+
     <item android:id="@+id/login_menu"
         android:title="@string/login"
+        android:icon="@drawable/baseline_account_circle_black_24"
         app:showAsAction="always">
     </item>
 
     <item android:id="@+id/checkout_menu"
-        android:title="@string/checkout">
+        android:title="@string/checkout"
+        android:icon="@drawable/baseline_shopping_cart_black_24"
+        app:showAsAction="always">
     </item>
-
 
 </menu>

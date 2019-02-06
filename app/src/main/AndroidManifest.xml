@@ -28,10 +28,9 @@
 
 
         <activity android:name=".ui.activities.LoginActivity"> </activity>
-
-
-
         <activity android:name=".ui.activities.RegisterActivity"> </activity>
+        <activity android:name=".ui.activities.ShopActivity"> </activity>
+        <activity android:name=".ui.activities.CheckoutActivity"> </activity>
 
     </application>
 

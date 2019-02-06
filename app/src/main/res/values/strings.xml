@@ -6,10 +6,12 @@
     <string name="confirmPassword_hint">Conferma password</string>
     <string name="loginRegister_labelClickable">Nuovo su JustSauce? Crea un account</string>
     <string name="login">LOGIN</string>
-    <string name="checkout">CHECKOUT</string>
+    <string name="checkout">Checkout</string>
     <string name="register_mainLabel">Join JustSauce</string>
     <string name="nickname_hint">Inserisci nickname</string>
     <string name="register">REGISTRATI</string>
     <string name="registerLogin_labelClickable">Hai già un account? Effettua il login</string>
     <string name="nTelefono_hint">Inserisci numero di telefono</string>
+    <string name="cambiaLayout">Layout</string>
+    <string name="menu_button"> VEDI MENU</string>
 </resources>

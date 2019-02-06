@@ -6,21 +6,25 @@ public class Restaurant {
     private String indirizzo;
     private double ordineMinimo;
     private String categoria;
-    private String piattoClassico;
     private String tempoConsegna;
-    private double valutazione;
+    private String image;
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public Restaurant(){}
 
-    public Restaurant(String nome,String indirizzo,double ordineMinimo,String categoria,String piattoClassico, String tempoConsegna, double valutazione){
+    public Restaurant(String nome,String indirizzo,double ordineMinimo,String categoria, String tempoConsegna){
         this.nome = nome;
         this.indirizzo = indirizzo;
         this.ordineMinimo = ordineMinimo;
         this.categoria = categoria;
-        this.piattoClassico = piattoClassico;
         this.tempoConsegna = tempoConsegna;
-        this.valutazione = valutazione;
     }
 
     public String getNome() {
@@ -55,14 +59,6 @@ public class Restaurant {
         this.categoria = categoria;
     }
 
-    public String getPiattoClassico() {
-        return piattoClassico;
-    }
-
-    public void setPiattoClassico(String piattoClassico) {
-        this.piattoClassico = piattoClassico;
-    }
-
     public String getTempoConsegna() {
         return tempoConsegna;
     }
@@ -71,11 +67,4 @@ public class Restaurant {
         this.tempoConsegna = tempoConsegna;
     }
 
-    public double getValutazione() {
-        return valutazione;
-    }
-
-    public void setValutazione(double valutazione) {
-        this.valutazione = valutazione;
-    }
 }
