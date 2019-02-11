@@ -1,5 +1,7 @@
 package com.example.justsauce.ui.datamodels;
 
+import java.util.ArrayList;
+
 public class Restaurant {
 
     private String nome;
@@ -8,6 +10,30 @@ public class Restaurant {
     private String categoria;
     private String tempoConsegna;
     private String image;
+    private ArrayList<Product> menu;
+
+
+    public Restaurant(){}
+    public Restaurant(String nome,String indirizzo,double ordineMinimo,String categoria, String tempoConsegna){
+        this.nome = nome;
+        this.indirizzo = indirizzo;
+        this.ordineMinimo = ordineMinimo;
+        this.categoria = categoria;
+        this.tempoConsegna = tempoConsegna;
+        menu = new ArrayList<>();
+    }
+
+
+
+
+
+    public ArrayList<Product> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(ArrayList<Product> menu) {
+        this.menu = menu;
+    }
 
     public String getImage() {
         return image;
@@ -15,16 +41,6 @@ public class Restaurant {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public Restaurant(){}
-
-    public Restaurant(String nome,String indirizzo,double ordineMinimo,String categoria, String tempoConsegna){
-        this.nome = nome;
-        this.indirizzo = indirizzo;
-        this.ordineMinimo = ordineMinimo;
-        this.categoria = categoria;
-        this.tempoConsegna = tempoConsegna;
     }
 
     public String getNome() {

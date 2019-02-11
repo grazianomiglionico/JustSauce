@@ -14,7 +14,8 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardElevation="5dp"
-        app:cardCornerRadius="@dimen/cardview_default_radius">
+        app:cardCornerRadius="5dp"
+        app:cardPreventCornerOverlap="false">
 
         <LinearLayout
             android:orientation="vertical"

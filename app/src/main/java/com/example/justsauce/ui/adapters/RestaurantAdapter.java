@@ -20,16 +20,16 @@ import java.util.ArrayList;
 
 public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnClickListener{
     private LayoutInflater inflater;
-    private ArrayList<Restaurant> data;
     private Context context;
+    private ArrayList<Restaurant> data;
     private boolean isGridLayout = false;
     private Button menu_button;
 
 
     public RestaurantAdapter(Context context, ArrayList<Restaurant> data){
         inflater = LayoutInflater.from(context);
-        this.data = data;
         this.context = context;
+        this.data = data;
     }
 
     public boolean getIsGridLayout() {

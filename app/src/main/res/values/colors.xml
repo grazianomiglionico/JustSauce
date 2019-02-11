@@ -3,5 +3,7 @@
     <color name="colorPrimary">#F72415</color>
     <color name="colorPrimaryDark">#B40900</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="light_black">#2C2C2C</color>
     <color name="colorhint">#D6D5D5</color> <!-- silver -->
+
 </resources>

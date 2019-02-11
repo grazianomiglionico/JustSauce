@@ -32,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPreferences = getSharedPreferences(SharedPrefs,MODE_PRIVATE);
 
         restaurantRV = findViewById(R.id.places_rv);
 
         adapter = new RestaurantAdapter(this,getData());
+        adapter.setIsGridLayout(sharedPreferences.getBoolean(LAYOUT_MODE,false));
+
         layoutManager = getLayoutManager(getSavedLayoutManager());
 
 
@@ -121,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean getSavedLayoutManager(){
         sharedPreferences = getSharedPreferences(SharedPrefs,MODE_PRIVATE);
-        adapter.setIsGridLayout(sharedPreferences.getBoolean(LAYOUT_MODE,false));
         return sharedPreferences.getBoolean(LAYOUT_MODE,false);
     }
 
