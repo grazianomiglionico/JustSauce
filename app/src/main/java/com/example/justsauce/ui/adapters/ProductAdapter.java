@@ -20,10 +20,10 @@ public class ProductAdapter extends RecyclerView.Adapter {
 
     private ArrayList<Product> data;
 
-    public ProductAdapter(Context context, ArrayList<Product> menu){
+    public ProductAdapter(Context context, ArrayList<Product> data){
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.data = menu;
+        this.data = data;
     }
 
     public interface OnQuantityChangedListener{

@@ -55,4 +55,8 @@ public class Product {
         if(quantita == 0) return;
         this.quantita--;
     }
+
+    public double getSubtotal(){
+        return getQuantita() * getPrezzo();
+    }
 }

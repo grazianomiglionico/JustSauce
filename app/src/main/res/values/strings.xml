@@ -14,4 +14,6 @@
     <string name="nTelefono_hint">Inserisci numero di telefono</string>
     <string name="cambiaLayout">Layout</string>
     <string name="menu_button"> VEDI MENU</string>
+    <string name="order_label">RIEPILOGO ORDINE</string>
+    <string name="pay">PAY</string>
 </resources>

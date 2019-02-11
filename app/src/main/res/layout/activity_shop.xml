@@ -8,7 +8,7 @@
         android:id="@+id/header"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="170dp">
 
         <ImageView
             android:id="@+id/image"
@@ -45,10 +45,10 @@
 
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_rv"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/product_rv"
         android:padding="4dp"
         android:layout_below="@id/header" />
 
@@ -60,14 +60,15 @@
         android:background="@android:color/white"
         android:elevation="@dimen/cardview_default_elevation"
         android:layout_alignParentBottom="true"
-        android:padding="3dp">
+        android:padding="5dp"
+        android:layout_margin="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/total_string"
+                android:id="@+id/total_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -81,7 +82,7 @@
                 android:id="@+id/totalOrder_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/total_string"
+                android:layout_toRightOf="@+id/total_label"
                 android:text="0.0"
                 android:padding="3dp"
                 android:textSize="16sp" />
@@ -104,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="50dp"
-                android:layout_below="@+id/total_string"
+                android:layout_below="@+id/total_label"
                 android:indeterminate="false"
                 android:progress="0"
                 android:layout_marginLeft="10dp"

@@ -61,8 +61,6 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
         restaurantAddress_textView.setText(restaurant.getIndirizzo());
         restaurantOrderMinimum_textView.setText(restaurant.getOrdineMinimo() + "€");
 
-
-
         progressBar.setMax((int)(restaurant.getOrdineMinimo()) * 100);
 
         layoutManager = new LinearLayoutManager(this);
@@ -77,6 +75,8 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
         product_rv.setLayoutManager(layoutManager);
         product_rv.setAdapter(adapter);
 
+        checkout_button.setOnClickListener(this);
+
     }
 
 
@@ -90,14 +90,11 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
     private ArrayList<Product> getMenu(){
         ArrayList<Product> menu = new ArrayList<>();
 
+        menu.add(new Product("Big mac",5));
         menu.add(new Product("Mc menu",7));
         menu.add(new Product("Mc chicken",8));
         menu.add(new Product("Mc wrappen",9));
         menu.add(new Product("Mc sugo",10));
-        menu.add(new Product("Mc menu",3));
-        menu.add(new Product("Mc menu",4));
-        menu.add(new Product("Mc menu",5));
-        menu.add(new Product("Mc menu",6));
 
         return menu;
     }
@@ -109,8 +106,8 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
             checkout_button.setEnabled(false);
     }
 
-    private void updateTotal(double item){
-        total+=item;
+    private void updateTotal(double itemPrezzo){
+        total+=itemPrezzo;
         totalOrder_textView.setText(String.valueOf(total));
     }
 
