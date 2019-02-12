@@ -28,7 +28,7 @@ public class CheckoutActivity extends AppCompatActivity implements View.OnClickL
     private OrderAdapter adapter;
     private Order order;
 
-    private double total = 25;
+    private double total = 39;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,9 @@ public class CheckoutActivity extends AppCompatActivity implements View.OnClickL
         bindData();
 
         layoutManager = new LinearLayoutManager(this);
-        adapter = new OrderAdapter(this,order.getProducts());
+        adapter = new OrderAdapter(this,order);
         adapter.setOnRemovedItemListener(this);
+
         order_rv.setLayoutManager(layoutManager);
         order_rv.setAdapter(adapter);
 
@@ -57,7 +58,7 @@ public class CheckoutActivity extends AppCompatActivity implements View.OnClickL
         restaurantName_textView.setText(order.getRestaurant().getNome());
         restaurantAddress_textView.setText(order.getRestaurant().getIndirizzo());
         totalOrder_textView.setText(String.valueOf(order.getTotal()));
-        restaurantOrderMinimum_textView.setText(String.valueOf(20.00));
+        restaurantOrderMinimum_textView.setText(String.valueOf(order.getRestaurant().getOrdineMinimo()));
     }
 
     //TODO hardcoded
@@ -97,22 +98,14 @@ public class CheckoutActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void updateTotal(){
-        order.setTotal(order.getTotal() - 5);
-        totalOrder_textView.setText(String.valueOf(order.getTotal()));
-        /*
+    public void updateTotal(double prezzo){
         order.setTotal(order.getTotal() - prezzo);
-        totalOrder_textView.setText(String.valueOf(total));
-        */
+        totalOrder_textView.setText(String.valueOf(order.getTotal()));
     }
 
     @Override
     public void onRemove(Product product) {
         order.getProducts().remove(product);
-        updateTotal();
-        /*
-        order.getProducts().remove(product);
         updateTotal(product.getPrezzo());
-        */
     }
 }

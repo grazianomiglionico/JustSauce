@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.justsauce.R;
+import com.example.justsauce.ui.Utils;
 import com.example.justsauce.ui.datamodels.Order;
 import com.example.justsauce.ui.datamodels.Product;
 
@@ -21,12 +23,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<Product> data;
+    private Order order;
 
 
-    public OrderAdapter(Context context, ArrayList<Product> data){
+    public OrderAdapter(Context context, Order order){
         this.context = context;
-        this.data = data;
+        this.order = order;
         inflater = LayoutInflater.from(context);
     }
 
@@ -55,22 +57,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder orderViewHolder, int position) {
-        Product item = data.get(position);
-
-        /*
-        orderViewHolder.itemQuantita_textView.setText(String.valueOf(item.getQuantita()) + "x");
-        orderViewHolder.itemNome_textView.setText(item.getNome());
-        orderViewHolder.itemSubTotal_textView.setText(String.valueOf(item.getSubtotal()));
-        */
+        Product item = order.getProducts().get(position);
 
         orderViewHolder.itemQuantita_textView.setText("1x");
         orderViewHolder.itemNome_textView.setText(item.getNome());
-        orderViewHolder.itemSubtotal_textView.setText("5.0");
+        orderViewHolder.itemSubtotal_textView.setText(String.valueOf(item.getPrezzo()));
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return order.getProducts().size();
     }
 
 
@@ -114,10 +110,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //data.remove(getAdapterPosition());
-                                //notifyItemRemoved(getAdapterPosition());
-
-                                Product product = data.get(getAdapterPosition());
+                                if( (order.getTotal() - order.getProducts().get(getAdapterPosition()).getPrezzo()) < (order.getRestaurant().getOrdineMinimo()) ) {
+                                    Utils.showToast(context, "Impossibile eliminare il prodotto.\nL'ordine è minore dell'ordine minimo.");
+                                    return;
+                                }
+                                Product product = order.getProducts().get(getAdapterPosition());
                                 onRemovedItemListener.onRemove(product);
                                 notifyItemRemoved(getAdapterPosition());
                             }
