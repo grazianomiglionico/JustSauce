@@ -3,6 +3,7 @@ package com.example.justsauce.ui.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +12,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.justsauce.R;
+import com.example.justsauce.ui.activities.MainActivity;
 import com.example.justsauce.ui.activities.ShopActivity;
 import com.example.justsauce.ui.datamodels.Restaurant;
 
 import java.util.ArrayList;
 
-public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public class RestaurantAdapter extends RecyclerView.Adapter{
     private LayoutInflater inflater;
     private Context context;
     private ArrayList<Restaurant> data;
@@ -31,6 +34,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnCl
         this.context = context;
         this.data = data;
     }
+    public RestaurantAdapter(Context context){
+        inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.data = new ArrayList<>();
+    }
 
     public boolean getIsGridLayout() {
         return isGridLayout;
@@ -40,6 +48,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnCl
         isGridLayout = gridLayout;
     }
 
+    public void setData(ArrayList<Restaurant> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
 
 
     @Override
@@ -47,9 +60,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnCl
         int layoutResources = getIsGridLayout() ? R.layout.item_restaurant_grid : R.layout.item_restaurant;
 
         View view = inflater.inflate(layoutResources,viewGroup,false);
-
-        menu_button = view.findViewById(R.id.menu_button);
-        menu_button.setOnClickListener(this);
 
         return new RestaurantViewHolder(view);
     }
@@ -72,19 +82,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnCl
         return data.size();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.menu_button:
-                context.startActivity(new Intent(context,ShopActivity.class));
-                break;
-        }
-    }
 
-
-
-
-    public class RestaurantViewHolder extends RecyclerView.ViewHolder{
+    public class RestaurantViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView image;
         public TextView restaurantName_textView;
@@ -103,6 +102,18 @@ public class RestaurantAdapter extends RecyclerView.Adapter implements View.OnCl
             restaurantCategory_textView = itemView.findViewById(R.id.restaurantCategory_textView);
             restaurantOrderMinimum_textView = itemView.findViewById(R.id.restaurantOrderMinimum_textView);
             restaurantTempoConsegna_textView = itemView.findViewById(R.id.restaurantTempoConsegna_textView);
+
+            menu_button = itemView.findViewById(R.id.menu_button);
+            menu_button.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.menu_button){
+                Intent intent = new Intent(context,ShopActivity.class);
+                intent.putExtra(Restaurant.RESTAURANT_ID,data.get(getAdapterPosition()).getId());
+                context.startActivity(intent);
+            }
         }
     }
 }

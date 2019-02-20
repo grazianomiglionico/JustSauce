@@ -1,5 +1,8 @@
 package com.example.justsauce.ui.datamodels;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Product {
@@ -8,17 +11,19 @@ public class Product {
     private double prezzo;
     private int quantita;
 
-
     public Product(){}
     public Product(String nome, double prezzo){
         this.nome = nome;
         this.prezzo = prezzo;
     }
-
     public Product(String nome, double prezzo, int quantita) {
         this.nome = nome;
         this.prezzo = prezzo;
         this.quantita = quantita;
+    }
+    public Product(JSONObject jsonObject) throws JSONException {
+        this.nome = jsonObject.getString("name");
+        this.prezzo = jsonObject.getDouble("price");
     }
 
 

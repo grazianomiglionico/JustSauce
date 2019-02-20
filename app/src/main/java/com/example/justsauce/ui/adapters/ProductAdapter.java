@@ -11,19 +11,30 @@ import android.widget.TextView;
 
 import com.example.justsauce.R;
 import com.example.justsauce.ui.datamodels.Product;
+import com.example.justsauce.ui.datamodels.Restaurant;
 
 import java.util.ArrayList;
 
 public class ProductAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     private Context context;
-
     private ArrayList<Product> data;
+
 
     public ProductAdapter(Context context, ArrayList<Product> data){
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.data = data;
+    }
+    public ProductAdapter(Context context){
+        inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.data = new ArrayList<>();
+    }
+
+    public void setData(ArrayList<Product> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     public interface OnQuantityChangedListener{
@@ -60,8 +71,6 @@ public class ProductAdapter extends RecyclerView.Adapter {
         vh.itemNome_textView.setText(item.getNome());
         vh.itemPrezzo_textView.setText(String.valueOf(item.getPrezzo()));
         vh.quantita_textView.setText(String.valueOf(item.getQuantita()));
-
-
 
     }
 

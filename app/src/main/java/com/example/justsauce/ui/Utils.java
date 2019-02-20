@@ -5,6 +5,10 @@ import android.widget.Toast;
 
 public class Utils {
 
+    public static final int LOGIN_REQUEST_CODE = 1001;
+    public static final String LOGIN_ACTION = "LOGIN_ACTION";
+    public static final String LOGOUT_ACTION = "LOGOUT_ACTION";
+
     public static boolean verifyEmail(String email){
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -21,7 +25,7 @@ public class Utils {
         if(n_telefono.length()==10) return true; else return false;
     }
 
-    public static boolean checkNickname(String nickname){
+    public static boolean checkUsername(String nickname){
         if(nickname.length()>=5) return true; else return false;
     }
 

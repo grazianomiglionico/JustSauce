@@ -7,53 +7,77 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.justsauce.R;
+import com.example.justsauce.ui.SharedPreferencesManager;
 import com.example.justsauce.ui.Utils;
+import com.example.justsauce.ui.datamodels.User;
+import com.example.justsauce.ui.services.RestController;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    EditText nickname_editText, email_editText, password_editText, passwordConfirm_editText, nTelefono_editText;
-    Button register_button;
-    TextView effettuaLogin_textView;
+import java.util.HashMap;
+import java.util.Map;
+
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, Response.Listener<String>, Response.ErrorListener {
+
+    //STATIC FINAL VARIABLE
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+
+    //UI Components
+    private EditText username_editText, email_editText, password_editText, passwordConfirm_editText, nTelefono_editText;
+    private Button register_button;
+    private TextView effettuaLogin_textView;
+
+    //DATA MODEL Components
+    private boolean isUsernameValid,isTelephoneValid,isEmailValid,isPasswordValid,isPasswordConfirmValid;
+
+    //REST CONTROLLER Components
+    private RestController restController;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        nickname_editText = findViewById(R.id.nickname_editText);
+        //
+        username_editText = findViewById(R.id.username_editText);
         nTelefono_editText = findViewById(R.id.nTelefono_editText);
         email_editText = findViewById(R.id.email_editText);
         password_editText = findViewById(R.id.password_editText);
         passwordConfirm_editText = findViewById(R.id.passwordConfirm_editText);
-
         register_button = findViewById(R.id.register_button);
         effettuaLogin_textView = findViewById(R.id.effettuaLogin_textView);
         effettuaLogin_textView.setPaintFlags(effettuaLogin_textView.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
 
+        //click listener
         register_button.setOnClickListener(this);
         effettuaLogin_textView.setOnClickListener(this);
 
-
-        nickname_editText.addTextChangedListener(new TextWatcher() {
+        //
+        username_editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String nickname = nickname_editText.getText().toString();
-                if(!Utils.checkNickname(nickname))
-                    nickname_editText.setError("Il nicknama deve essre di almeno 5 caratteri");
+                isUsernameValid = Utils.checkUsername(s.toString().trim());
+                if(!isUsernameValid) username_editText.setError("Il nicknama deve essere di almeno 5 caratteri");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkRegisterButtonEnabled();
+                registerButtonEnabled();
             }
         });
         nTelefono_editText.addTextChangedListener(new TextWatcher() {
@@ -62,14 +86,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String nTelefono = nTelefono_editText.getText().toString();
-                if(!Utils.checkNTelephone(nTelefono))
-                    nTelefono_editText.setError("Numero di telefono errato");
+                isTelephoneValid = Utils.checkNTelephone(s.toString().trim());
+                if(!isTelephoneValid) nTelefono_editText.setError("Numero di telefono errato");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkRegisterButtonEnabled();
+                registerButtonEnabled();
             }
         });
         email_editText.addTextChangedListener(new TextWatcher() {
@@ -78,14 +101,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String email = email_editText.getText().toString();
-                if(!Utils.verifyEmail(email))
-                    email_editText.setError("Email errata");
+                isEmailValid = Utils.verifyEmail(s.toString().trim());
+                if(!isEmailValid) email_editText.setError("Email errata");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkRegisterButtonEnabled();
+                registerButtonEnabled();
             }
         });
         password_editText.addTextChangedListener(new TextWatcher() {
@@ -94,14 +116,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String password = password_editText.getText().toString();
-                if(!Utils.checkPassword(password))
-                    password_editText.setError("La password deve contenere almeno 6 caratteri");
+                isPasswordValid = Utils.checkPassword(s.toString().trim());
+                if(!isPasswordValid) password_editText.setError("La password deve contenere almeno 6 caratteri");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkRegisterButtonEnabled();
+                registerButtonEnabled();
             }
         });
         passwordConfirm_editText.addTextChangedListener(new TextWatcher() {
@@ -110,104 +131,70 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String password = password_editText.getText().toString();
-                String passwordConfirm = passwordConfirm_editText.getText().toString();
-                if(!Utils.confirmPassword(password,passwordConfirm))
-                    passwordConfirm_editText.setError("Le password non coincidono");
+                String password = password_editText.getText().toString().trim();
+                isPasswordConfirmValid = Utils.confirmPassword(password,s.toString().trim());
+                if(!isPasswordConfirmValid) passwordConfirm_editText.setError("Le password non coincidono");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkRegisterButtonEnabled();
+                registerButtonEnabled();
             }
         });
+
+        //
+        restController = new RestController(this);
     }
 
-    private void checkRegisterButtonEnabled(){
-
-        String nickname = nickname_editText.getText().toString();
-        String nTelefono = nTelefono_editText.getText().toString();
-        String email = email_editText.getText().toString();
-        String password = password_editText.getText().toString();
-        String passwordConfirm = passwordConfirm_editText.getText().toString();
-
-        if(Utils.checkNickname(nickname))
-            if(Utils.verifyEmail(email))
-                if(Utils.checkPassword(password))
-                    if(Utils.confirmPassword(password,passwordConfirm))
-                        if(Utils.checkNTelephone(nTelefono))
-                            register_button.setEnabled(true);
-                        else
-                            register_button.setEnabled(false);
-                    else
-                        register_button.setEnabled(false);
-                else
-                    register_button.setEnabled(false);
-            else
-                register_button.setEnabled(false);
+    private void registerButtonEnabled(){
+        if (isUsernameValid && isTelephoneValid && isEmailValid && isPasswordValid && isPasswordConfirmValid)
+            register_button.setEnabled(true);
         else
             register_button.setEnabled(false);
-
     }
 
     private void doRegister(){
+        Map<String, String> params = new HashMap<>();
+        params.put("username",username_editText.getText().toString().trim());
+        params.put("email",email_editText.getText().toString().trim());
+        params.put("password",password_editText.getText().toString().trim());
 
-        Utils.showToast(this,"Registrazione effettuata, effettua il login");   //registrazione effettuata
-        Intent intent = new Intent(this,LoginActivity.class);    //reindirizza all'activity del login
-        startActivity(intent);
-
-
-        /*
-        String nickname = nickname_editText.getText().toString();
-        String email = email_editText.getText().toString();
-        String password = password_editText.getText().toString();
-        String passwordConfirm = passwordConfirm_editText.getText().toString();
-        String nTelefono = nTelefono_editText.getText().toString();
-
-        if(Utils.verifyNickname(nickname)){
-            if(Utils.verifyEmail(email)){
-                if(Utils.verifyPassword(password)){
-                    if(Utils.confirmPassword(password,passwordConfirm)){
-                        if(Utils.verifyNTelephone(nTelefono)){
-                            register_button.setEnabled(true);
-                        }
-                        else{
-                            register_button.setEnabled(false);
-                            nTelefono_editText.setError("Numero di telefono errato");
-                        }
-                    }
-                    else {
-                        register_button.setEnabled(false);
-                        passwordConfirm_editText.setError("Le password non coincidono");
-                    }
-                }
-                else {
-                    register_button.setEnabled(false);
-                    password_editText.setError("La password deve contenere almeno 6 caratteri");
-                }
-            }
-            else {
-                register_button.setEnabled(false);
-                email_editText.setError("Email errata");
-            }
-        }
-        else {
-            register_button.setEnabled(false);
-            nickname_editText.setError("Il nicknama deve essre di almeno 5 caratteri");
-        }*/
-
+        restController.postRequest(User.REGISTER_ENDPOINT,params,this,this);
     }
 
     @Override
     public void onClick(View v){
-
-        switch (v.getId()){
-            case R.id.register_button:
-                doRegister();
-                break;
-            case R.id.effettuaLogin_textView:
-                startActivity(new Intent(this,LoginActivity.class));
-                break;
+        if(v.getId() == R.id.register_button){
+            doRegister();
+        }
+        else if(v.getId() == R.id.effettuaLogin_textView){
+            startActivity(new Intent(this,LoginActivity.class));
         }
     }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Log.e(TAG,error.getMessage());
+        Utils.showToast(this,error.getMessage());
+    }
+
+    @Override
+    public void onResponse(String response) {
+        Log.i(TAG,"REGISTRAZIONE EFFETTUATA");
+        Log.d(TAG,response);
+        Utils.showToast(this,"REGISTRAZIONE EFFETTUATA");
+
+        try {
+            JSONObject responseJson = new JSONObject(response);
+
+            String accessToken = responseJson.getString("jwt");
+            SharedPreferencesManager.putValue(this,User.ACCESS_TOKEN_KEY,accessToken);
+
+            User user = new User(responseJson.getJSONObject("user"),accessToken);
+
+        } catch (JSONException e) {
+            Log.e(TAG,e.getMessage());
+        }
+    }
+
 }

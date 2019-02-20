@@ -2,11 +2,9 @@ package com.example.justsauce.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -74,7 +72,7 @@ public class CheckoutActivity extends AppCompatActivity implements View.OnClickL
 
     private Restaurant getRestaurant() {
         Restaurant restaurant = new Restaurant("MC Donald's","Via Tiburtina 515",10,"Fast Food","15-20min");
-        restaurant.setMenu(getMenu());
+        restaurant.setProducts(getMenu());
 
         return restaurant;
     }

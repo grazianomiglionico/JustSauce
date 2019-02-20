@@ -1,16 +1,25 @@
 package com.example.justsauce.ui.datamodels;
 
+import android.print.PrinterId;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Restaurant {
 
+    public static final String RESTAURANT_ID = "ID";
+    private String id;
     private String nome;
     private String indirizzo;
     private double ordineMinimo;
     private String categoria;
     private String tempoConsegna;
     private String image;
-    private ArrayList<Product> menu;
+    private ArrayList<Product> products;
+
+    public static final String ENDPOINT = "restaurants/";
 
 
     public Restaurant(){}
@@ -20,19 +29,32 @@ public class Restaurant {
         this.ordineMinimo = ordineMinimo;
         this.categoria = categoria;
         this.tempoConsegna = tempoConsegna;
-        menu = new ArrayList<>();
+        products = new ArrayList<>();
     }
 
-
-
-
-
-    public ArrayList<Product> getMenu() {
-        return menu;
+    public Restaurant(JSONObject jsonRestaurant) throws JSONException {
+        id = jsonRestaurant.getString("id");
+        image = jsonRestaurant.getString("image_url");
+        nome = jsonRestaurant.getString("name");
+        indirizzo = jsonRestaurant.getString("address");
+        ordineMinimo = jsonRestaurant.getDouble("min_order");
+        products = new ArrayList<>();
     }
 
-    public void setMenu(ArrayList<Product> menu) {
-        this.menu = menu;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
     }
 
     public String getImage() {

@@ -3,6 +3,14 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ProgressBar
+        android:id="@+id/progressBarCyclic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minWidth="50dp"
+        android:minHeight="50dp"
+        android:layout_centerInParent="true" />
 
     <RelativeLayout
         android:id="@+id/header"
@@ -88,15 +96,25 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:text="MIN. ORDER"
+                android:id="@+id/string_minOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/restaurantOrderMinimum_textView"
+                android:layout_marginEnd="3dp"
+                android:padding="3dp"
+                android:textSize="16sp"/>
+
+            <TextView
+                tools:text="12.5€"
                 android:id="@+id/restaurantOrderMinimum_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="3dp"
-                android:background="@drawable/rounded_corner"
-                android:fontFamily="Roboto"
                 android:padding="3dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:background="@drawable/rounded_corner" />
 
 
             <ProgressBar

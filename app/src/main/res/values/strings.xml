@@ -8,7 +8,7 @@
     <string name="login">LOGIN</string>
     <string name="checkout">Checkout</string>
     <string name="register_mainLabel">Join JustSauce</string>
-    <string name="nickname_hint">Inserisci nickname</string>
+    <string name="nickname_hint">Inserisci username</string>
     <string name="register">REGISTRATI</string>
     <string name="registerLogin_labelClickable">Hai già un account? Effettua il login</string>
     <string name="nTelefono_hint">Inserisci numero di telefono</string>
@@ -16,4 +16,7 @@
     <string name="menu_button"> VEDI MENU</string>
     <string name="order_label">RIEPILOGO ORDINE</string>
     <string name="pay">PAY</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="profile_actionSettings">Profile Settings</string>
 </resources>

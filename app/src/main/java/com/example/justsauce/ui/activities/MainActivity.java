@@ -1,32 +1,59 @@
 package com.example.justsauce.ui.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.justsauce.R;
+import com.example.justsauce.ui.SharedPreferencesManager;
+import com.example.justsauce.ui.Utils;
 import com.example.justsauce.ui.adapters.RestaurantAdapter;
 import com.example.justsauce.ui.datamodels.Restaurant;
+import com.example.justsauce.ui.datamodels.User;
+import com.example.justsauce.ui.services.RestController;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Response.Listener<String>, Response.ErrorListener {
 
-    RecyclerView restaurantRV;
-    RecyclerView.LayoutManager layoutManager;
-    RestaurantAdapter adapter;
-    ArrayList<Restaurant> arrayList;
-
+    //
+    private static final String TAG = MainActivity.class.getSimpleName();
     SharedPreferences sharedPreferences;
     private static final String SharedPrefs = "com.example.justsauce.general_prefs";
-    private static final String LAYOUT_MODE = "LAYOUT_MODE";                                //chiave di isGridLayout
+    private static final String KEY_LAYOUT_MODE = "LAYOUT_MODE";                        //chiave di isGridLayout
+
+    //
+    private RecyclerView restaurantRV;
+    private RecyclerView.LayoutManager layoutManager;
+    private RestaurantAdapter adapter;
+    private ProgressBar progressBarCyclic;
+
+    private ArrayList<Restaurant> arrayList = new ArrayList<>();
+
+    private RestController restController;
+
+    private Menu menu;
+
+    private LoginLogoutReceiver receiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +62,42 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(SharedPrefs,MODE_PRIVATE);
 
         restaurantRV = findViewById(R.id.places_rv);
+        progressBarCyclic = findViewById(R.id.progressBarCyclic);
 
-        adapter = new RestaurantAdapter(this,getData());
-        adapter.setIsGridLayout(sharedPreferences.getBoolean(LAYOUT_MODE,false));
+        adapter = new RestaurantAdapter(this);
+        adapter.setIsGridLayout(sharedPreferences.getBoolean(KEY_LAYOUT_MODE,false));
 
         layoutManager = getLayoutManager(getSavedLayoutManager());
 
 
         restaurantRV.setLayoutManager(layoutManager);
         restaurantRV.setAdapter(adapter);
+
+        restController = new RestController(this);
+        restController.getRequest(Restaurant.ENDPOINT,this,this);
+
+        //set Broadcast listener by action
+        receiver = new LoginLogoutReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,new IntentFilter(Utils.LOGIN_ACTION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,new IntentFilter(Utils.LOGOUT_ACTION));
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        boolean isLoggedSharedPrefs = SharedPreferencesManager.getIsLoggedSharedPrefs(this);
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.menu_main,menu);
 
         menu.findItem(R.id.changeLayout).setIcon(adapter.getIsGridLayout() ? R.drawable.baseline_view_module_black_24 : R.drawable.baseline_view_list_black_24);
+        menu.findItem(R.id.checkout_menu).setVisible(false);
+        manageMenuByLogin(isLoggedSharedPrefs);
 
         return true;
     }
@@ -72,33 +116,16 @@ public class MainActivity extends AppCompatActivity {
             item.setIcon(adapter.getIsGridLayout() ? R.drawable.baseline_view_module_black_24 : R.drawable.baseline_view_list_black_24);
             saveLayoutManager(adapter.getIsGridLayout());
             return true;
+        } else if(item.getItemId() == R.id.profile_menu){
+            startActivity(new Intent(this,ProfileActivity.class));
+            return true;
+        } else if(item.getItemId() == R.id.logout_menu){
+            SharedPreferencesManager.putValue(this,User.LOGIN_TOKEN_KEY,null);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Utils.LOGOUT_ACTION));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    private ArrayList<Restaurant> getData(){
-        arrayList = new ArrayList();
-
-        Restaurant mcDonald = new Restaurant("MC Donald's","Via Tiburtina 515",10,"Fast Food","15-20min");
-        Restaurant burgerKing = new Restaurant("Burger King","Via Tiburtina 474",8,"Fast Food","15-20min");
-        Restaurant kfc = new Restaurant("KFC","Via Sandro sandri 79",15,"Fast Food","10-15min");
-        Restaurant rossoPomodoro = new Restaurant("Rosso Pomodoro","Via Sandro sandri 81",15,"Italiano","20-30min");
-
-
-        mcDonald.setImage("https://chandigarhofficial.com/wp-content/uploads/2018/11/Mcdonals-Logo.png");
-        burgerKing.setImage("https://c8.alamy.com/compit/p2cgt2/burger-king-logo-p2cgt2.jpg");
-        kfc.setImage("https://pbs.twimg.com/profile_images/907647041207099392/vr20oP_Q_400x400.jpg");
-        rossoPomodoro.setImage("https://i.vimeocdn.com/video/472128650_1280x720.jpg");
-
-
-        arrayList.add(mcDonald);
-        arrayList.add(burgerKing);
-        arrayList.add(kfc);
-        arrayList.add(rossoPomodoro);
-
-        return arrayList;
     }
 
     private void setLayoutManager(){
@@ -118,13 +145,56 @@ public class MainActivity extends AppCompatActivity {
     private void saveLayoutManager(boolean isGridLayout){
         sharedPreferences = getSharedPreferences(SharedPrefs,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(LAYOUT_MODE,isGridLayout);
+        editor.putBoolean(KEY_LAYOUT_MODE,isGridLayout);
         editor.apply();
     }
 
     private boolean getSavedLayoutManager(){
         sharedPreferences = getSharedPreferences(SharedPrefs,MODE_PRIVATE);
-        return sharedPreferences.getBoolean(LAYOUT_MODE,false);
+        return sharedPreferences.getBoolean(KEY_LAYOUT_MODE,false);
+    }
+
+    private void manageMenuByLogin(boolean isLogged){
+        if(isLogged) {
+            menu.findItem(R.id.login_menu).setVisible(false);
+            menu.findItem(R.id.profile_actionSettings).setVisible(true);
+        }
+        else {
+            menu.findItem(R.id.profile_actionSettings).setVisible(false);
+            menu.findItem(R.id.login_menu).setVisible(true);
+        }
+    }
+
+    @Override
+    public void onResponse(String response) {
+        Log.d(TAG,response);
+
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0;i<jsonArray.length(); i++){
+                Restaurant restaurant = new Restaurant(jsonArray.getJSONObject(i));
+                arrayList.add(restaurant);
+            }
+            adapter.setData(arrayList);
+            progressBarCyclic.setVisibility(View.GONE);
+        } catch (JSONException e) {
+            Log.e(TAG,e.getMessage());
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Log.e(TAG,error.getMessage());
+        Utils.showToast(this,error.getMessage());
+    }
+
+
+    public class LoginLogoutReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG,"onReceive MainActivity");
+            manageMenuByLogin(intent.getAction().equals(Utils.LOGIN_ACTION));
+        }
     }
 
 }

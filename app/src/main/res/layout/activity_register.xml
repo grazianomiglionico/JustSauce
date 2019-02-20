@@ -44,7 +44,7 @@
         android:gravity="center">
 
         <EditText
-            android:id="@+id/nickname_editText"
+            android:id="@+id/username_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/nickname_hint"
@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/nTelefono_hint"
             android:textAlignment="center"
+            android:textColorHint="@color/colorhint"
             android:inputType="phone" />
 
         <EditText
