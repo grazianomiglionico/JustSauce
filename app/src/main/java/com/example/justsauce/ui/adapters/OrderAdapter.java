@@ -120,7 +120,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             }
                         }
                 );
-                builder.setIcon(R.drawable.baseline_warning_black_18);
+                builder.setIcon(R.drawable.baseline_warning_black_24);
                 builder.create().show();
             }
         }

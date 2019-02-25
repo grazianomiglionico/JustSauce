@@ -7,16 +7,18 @@ import java.util.ArrayList;
 
 public class Product {
 
+    private String id;
     private String nome;
     private double prezzo;
     private int quantita;
 
-    public Product(){}
+
     public Product(String nome, double prezzo){
         this.nome = nome;
         this.prezzo = prezzo;
     }
-    public Product(String nome, double prezzo, int quantita) {
+    public Product(String id,String nome, double prezzo, int quantita) {
+        this.id = id;
         this.nome = nome;
         this.prezzo = prezzo;
         this.quantita = quantita;
@@ -27,6 +29,13 @@ public class Product {
     }
 
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public int getQuantita() {
         return quantita;

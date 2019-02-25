@@ -11,30 +11,29 @@ import android.widget.TextView;
 
 import com.example.justsauce.R;
 import com.example.justsauce.ui.datamodels.Product;
-import com.example.justsauce.ui.datamodels.Restaurant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<Product> data;
+    private List<Product> data;
 
 
-    public ProductAdapter(Context context, ArrayList<Product> data){
-        inflater = LayoutInflater.from(context);
-        this.context = context;
-        this.data = data;
-    }
     public ProductAdapter(Context context){
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.data = new ArrayList<>();
     }
 
-    public void setData(ArrayList<Product> data) {
+    public void setData(List<Product> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public List<Product> getData(){
+        return data;
     }
 
     public interface OnQuantityChangedListener{
@@ -59,14 +58,14 @@ public class ProductAdapter extends RecyclerView.Adapter {
         int layoutResources = R.layout.item_product;
         View view = inflater.inflate(layoutResources,viewGroup,false);
 
-        return new MenuViewHolder(view);
+        return new ProductViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Product item = data.get(position);
 
-        MenuViewHolder vh = (MenuViewHolder)viewHolder;
+        ProductViewHolder vh = (ProductViewHolder)viewHolder;
 
         vh.itemNome_textView.setText(item.getNome());
         vh.itemPrezzo_textView.setText(String.valueOf(item.getPrezzo()));
@@ -82,14 +81,14 @@ public class ProductAdapter extends RecyclerView.Adapter {
 
 
 
-    public class MenuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView itemNome_textView;
         public TextView itemPrezzo_textView;
         public TextView quantita_textView;
         public Button add_btn,remove_btn;
 
-        public MenuViewHolder(@NonNull View itemView) {
+        public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
             itemNome_textView = itemView.findViewById(R.id.itemNome_textView);

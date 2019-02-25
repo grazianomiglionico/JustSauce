@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,9 +28,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.example.justsauce.R;
+import com.example.justsauce.ui.database.AppDatabase;
 import com.example.justsauce.ui.SharedPreferencesManager;
 import com.example.justsauce.ui.Utils;
 import com.example.justsauce.ui.adapters.ProductAdapter;
+import com.example.justsauce.ui.datamodels.Order;
 import com.example.justsauce.ui.datamodels.Product;
 import com.example.justsauce.ui.datamodels.Restaurant;
 import com.example.justsauce.ui.datamodels.User;
@@ -36,6 +41,9 @@ import com.example.justsauce.ui.services.RestController;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopActivity extends AppCompatActivity implements ProductAdapter.OnQuantityChangedListener, View.OnClickListener, Response.Listener<String>, Response.ErrorListener {
 
@@ -55,6 +63,7 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
     private ProductAdapter adapter;
 
     //DATA MODELS Components
+    private Order order;
     private Restaurant restaurant;
     private double total;
 
@@ -86,8 +95,8 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
         product_rv = findViewById(R.id.product_rv);
         checkout_button = findViewById(R.id.checkout_button);
         progressBar = findViewById(R.id.progressBar);
-        checkout_button.setOnClickListener(this);
 
+        checkout_button.setOnClickListener(this);
 
         //Create layout manager, adapter and set recycler view
         layoutManager = new LinearLayoutManager(this);
@@ -130,7 +139,7 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
 
         getMenuInflater().inflate(R.menu.menu_main,menu);
 
-        menu.findItem(R.id.changeLayout).setVisible(false);
+        menu.removeItem(R.id.changeLayout);
         manageMenuByLogin(isLoggedSharedPrefs);
 
         return true;
@@ -143,7 +152,10 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
             startActivity(new Intent(this,LoginActivity.class));
             return true;
         } else if(item.getItemId() == R.id.checkout_menu){
-            startActivity(new Intent(this,CheckoutActivity.class));
+            if(SharedPreferencesManager.getIsLoggedSharedPrefs(this))
+                startActivity(new Intent(this,CheckoutActivity.class));
+            else
+                startActivity(new Intent(this,LoginActivity.class));
             return true;
         } else if(item.getItemId() == R.id.profile_menu){
             startActivity(new Intent(this,ProfileActivity.class));
@@ -180,6 +192,14 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
         this.restaurant = restaurant;
     }
 
+    private void setOrder(Order order){
+        this.order = order;
+    }
+
+    private Order getOrder(){
+        return order;
+    }
+
     private void bindData(){
         Glide.with(this).load(restaurant.getImage()).into(image);
         restaurantName_textView.setText(restaurant.getNome());
@@ -195,7 +215,7 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
             checkout_button.setEnabled(true);
         else
             checkout_button.setEnabled(false);
-    }
+    } //TODO gestione checkout menu_button enabled and disabled
 
     private void updateTotal(double itemPrezzo){
         total+=itemPrezzo;
@@ -227,7 +247,10 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.checkout_button){
-            startActivity(new Intent(this,CheckoutActivity.class));
+            if(SharedPreferencesManager.getIsLoggedSharedPrefs(this))
+                new SaveTask().execute();
+            else
+                startActivity(new Intent(this,LoginActivity.class));
         }
     }
 
@@ -267,4 +290,40 @@ public class ShopActivity extends AppCompatActivity implements ProductAdapter.On
         }
     }
 
+
+
+
+
+
+
+
+
+
+    private class SaveTask extends AsyncTask<Void, Void, Void> {
+
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            List<Product> selectedProducts = adapter.getData();
+            selectedProducts.removeIf((Product P) -> P.getQuantita()<1);
+
+            Order order = new Order();
+            order.setRestaurant(restaurant);
+            order.setTotal(total);
+            order.setProducts(selectedProducts);
+
+            AppDatabase dbInstance = AppDatabase.getAppDatabase(ShopActivity.this);
+            dbInstance.orderDao().insert(order);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            startActivity(new Intent(ShopActivity.this,CheckoutActivity.class));
+        }
+    }
 }

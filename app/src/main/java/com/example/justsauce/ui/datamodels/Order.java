@@ -1,14 +1,45 @@
 package com.example.justsauce.ui.datamodels;
 
-import java.util.ArrayList;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 
+import com.example.justsauce.ui.typeconverter.ProductTypeConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(tableName = "Order")
 public class Order {
 
+    public static final String ENDPOINT = "orders/";
+
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    @Embedded
     private Restaurant restaurant;
-    private ArrayList<Product> products;
+
+    @ColumnInfo(name = "products")
+    @TypeConverters(ProductTypeConverter.class)
+    private List<Product> products;
+
+    @ColumnInfo(name = "total")
     private double total;
 
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Restaurant getRestaurant() {
         return restaurant;
@@ -18,11 +49,11 @@ public class Order {
         this.restaurant = restaurant;
     }
 
-    public ArrayList<Product> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(ArrayList<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 

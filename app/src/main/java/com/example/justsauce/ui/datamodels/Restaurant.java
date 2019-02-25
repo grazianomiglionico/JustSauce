@@ -1,5 +1,9 @@
 package com.example.justsauce.ui.datamodels;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.print.PrinterId;
 
 import org.json.JSONException;
@@ -7,22 +11,33 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+@Entity(tableName = "Restaurant")
 public class Restaurant {
 
     public static final String RESTAURANT_ID = "ID";
-    private String id;
-    private String nome;
-    private String indirizzo;
-    private double ordineMinimo;
-    private String categoria;
-    private String tempoConsegna;
-    private String image;
-    private ArrayList<Product> products;
-
     public static final String ENDPOINT = "restaurants/";
 
 
-    public Restaurant(){}
+    @ColumnInfo(name = "id_restaurant")
+    private String id;
+    @ColumnInfo(name = "nome")
+    private String nome;
+    @ColumnInfo(name = "indirizzo")
+    private String indirizzo;
+    @ColumnInfo(name = "ordine_minimo")
+    private double ordineMinimo;
+    @ColumnInfo(name = "categoria")
+    private String categoria;
+    @ColumnInfo(name = "tempo_consegna")
+    private String tempoConsegna;
+    @ColumnInfo(name = "image")
+    private String image;
+    @Ignore
+    private ArrayList<Product> products;
+
+
+
+
     public Restaurant(String nome,String indirizzo,double ordineMinimo,String categoria, String tempoConsegna){
         this.nome = nome;
         this.indirizzo = indirizzo;
@@ -31,7 +46,6 @@ public class Restaurant {
         this.tempoConsegna = tempoConsegna;
         products = new ArrayList<>();
     }
-
     public Restaurant(JSONObject jsonRestaurant) throws JSONException {
         id = jsonRestaurant.getString("id");
         image = jsonRestaurant.getString("image_url");

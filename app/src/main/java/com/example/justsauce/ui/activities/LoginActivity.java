@@ -157,7 +157,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setResult(Activity.RESULT_OK,i);
         finish();
         */
-
-        //TODO hardcoded
     }
 }
