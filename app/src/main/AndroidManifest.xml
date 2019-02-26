@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.justsauce">
+    package="com.graziano.justsauce">
 
     <dist:module dist:instant="true" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,7 @@
 
 
 
-        <activity android:name=".ui.activities.MainActivity">
+        <activity android:name="com.graziano.justsauce.ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,11 +28,11 @@
 
 
 
-        <activity android:name=".ui.activities.LoginActivity"> </activity>
-        <activity android:name=".ui.activities.RegisterActivity"> </activity>
-        <activity android:name=".ui.activities.ShopActivity"> </activity>
-        <activity android:name=".ui.activities.CheckoutActivity"> </activity>
-        <activity android:name=".ui.activities.ProfileActivity"> </activity>
+        <activity android:name="com.graziano.justsauce.ui.activities.LoginActivity"> </activity>
+        <activity android:name="com.graziano.justsauce.ui.activities.RegisterActivity"> </activity>
+        <activity android:name="com.graziano.justsauce.ui.activities.ShopActivity"> </activity>
+        <activity android:name="com.graziano.justsauce.ui.activities.CheckoutActivity"> </activity>
+        <activity android:name="com.graziano.justsauce.ui.activities.ProfileActivity"> </activity>
 
     </application>
 
